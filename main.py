@@ -1,12 +1,13 @@
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
-# from aiogram.fsm.storage.redis import RedisStorage
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
 
 import logging
 import contextlib
 import asyncio
 
+from core.fsm.throttling import ThrottlingMiddleware
 from core.handlers.basic import *
 from core.handlers.callback import *
 from core.fsm.state import FSMsubject
@@ -20,13 +21,17 @@ async def start():
         level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
     bot: Bot = Bot(token=cfg.BOT_TOKEN, parse_mode="HTML")
     dp = Dispatcher()
+    storage = RedisStorage.from_url("redis:127.0.0.1:6379")
+
+    dp.message.middleware.register(ThrottlingMiddleware(
+        storage=storage))
 
     dp.message.register(command_start, Command("start"))
     dp.message.register(command_start, Command("restart"))
     dp.message.register(make_test_message, FSMsubject.problems)
 
     dp.callback_query.register(
-        choose_subject_callback, F.data.in_(["math", "rus", "inf", "phys"]))
+        choose_subject_callback, F.data.in_(["math", "rus", "inf", "phys", "en"]))
     dp.callback_query.register(
         material_test_callback, FSMsubject.subject)
     dp.callback_query.register(callback_handler, F.data)

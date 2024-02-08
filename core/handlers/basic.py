@@ -27,7 +27,7 @@ async def make_test_message(message: Message, bot: Bot, state: FSMContext):
     for i in range(len(problems)):
         try:
             if i % 2 == 0:
-                if (subject == 'math' and int(problems[i]) > 19) or (subject == 'rus' and int(problems[i]) > 27) or (subject == 'inf' and int(problems[i]) > 27) or (subject == 'phys' and int(problems[i]) > 26):
+                if (subject == 'math' and int(problems[i]) > 19) or (subject == 'rus' and int(problems[i]) > 27) or (subject == 'inf' and int(problems[i]) > 27) or (subject == 'phys' and int(problems[i]) > 26) or (subject == 'en' and int(problems[i]) > 42):
                     raise Exception
                 dicts[int(problems[i])] = int(problems[i + 1])
         except Exception as e:

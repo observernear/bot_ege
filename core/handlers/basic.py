@@ -3,6 +3,8 @@ from aiogram.types import Message, callback_query, InputMediaDocument
 from aiogram.types.input_file import FSInputFile
 from aiogram.fsm.context import FSMContext
 from time import sleep
+from datetime import datetime
+
 
 import os
 
@@ -25,10 +27,10 @@ async def make_test_message(message: Message, bot: Bot, state: FSMContext):
     for i in range(len(problems)):
         try:
             if i % 2 == 0:
-                if (subject == 'math' and int(problems[i]) > 19) or (subject == 'rus' and int(problems[i]) > 27) or (subject == 'inf' and int(problems[i]) > 27):
+                if (subject == 'math' and int(problems[i]) > 19) or (subject == 'rus' and int(problems[i]) > 27) or (subject == 'inf' and int(problems[i]) > 27) or (subject == 'phys' and int(problems[i]) > 26):
                     raise Exception
                 dicts[int(problems[i])] = int(problems[i + 1])
-        except:
+        except Exception as e:
             await bot.send_message(
                 chat_id=message.from_user.id,
                 text="Ты ввел задания неправильно. Попробуй ещё раз!"
@@ -55,4 +57,11 @@ async def make_test_message(message: Message, bot: Bot, state: FSMContext):
     except:
         pass
     await state.clear()
-    await bot.send_message(chat_id=message.chat.id, text="Продолжим?", reply_markup=main_inline_keyboard())
+    msg = ''
+    date = db.get_date_test(message.from_user.id)
+    now_date = str(datetime.now().day)
+    if date != now_date:
+        db.update_date_test(message.from_user.id, now_date)
+        db.update_ball(message.from_user.id, 10)
+        msg = '\n\n<i>Тебе начислено 10 баллов за вариант</i>'
+    await bot.send_message(chat_id=message.chat.id, text="Продолжим?"+msg, reply_markup=main_inline_keyboard())

@@ -19,7 +19,7 @@ class Database:
     def create_table(self):
         with self.connection:
             return self.connection.execute(
-                f"CREATE TABLE IF NOT EXISTS users (`id` INTEGER PRIMARY KEY, `user_id` INTEGER, `ball` INTEGER DEFAULT 0, `tasks` INTEGER DEFAULT 0 , `date` TEXT)")
+                f"CREATE TABLE IF NOT EXISTS users (`id` INTEGER PRIMARY KEY, `user_id` INTEGER, `ball` INTEGER DEFAULT 0, `tasks` INTEGER DEFAULT 0 , `date` TEXT, `date_test` TEXT)")
 
     def get_ball(self, user_id):
         with self.connection:
@@ -41,9 +41,19 @@ class Database:
                 "SELECT `date` FROM `users` WHERE `user_id` = ?", (user_id,)).fetchall()
             return result[0][0]
 
+    def get_date_test(self, user_id):
+        with self.connection:
+            result = self.cursor.execute(
+                "SELECT `date_test` FROM `users` WHERE `user_id` = ?", (user_id,)).fetchall()
+            return result[0][0]
+
     def update_date(self, user_id, date):
         with self.connection:
             return self.connection.execute("UPDATE `users` SET `date` = ? WHERE `user_id` = ?", (date, user_id))
+
+    def update_date_test(self, user_id, date):
+        with self.connection:
+            return self.connection.execute("UPDATE `users` SET `date_test` = ? WHERE `user_id` = ?", (date, user_id))
 
     def update_ball(self, user_id, ball):
         with self.connection:

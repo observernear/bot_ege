@@ -26,7 +26,7 @@ async def start():
     dp.message.register(make_test_message, FSMsubject.problems)
 
     dp.callback_query.register(
-        choose_subject_callback, F.data.in_(["math", "rus", "inf"]))
+        choose_subject_callback, F.data.in_(["math", "rus", "inf", "phys"]))
     dp.callback_query.register(
         material_test_callback, FSMsubject.subject)
     dp.callback_query.register(callback_handler, F.data)

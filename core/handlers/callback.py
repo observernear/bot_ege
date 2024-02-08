@@ -18,17 +18,17 @@ async def callback_handler(callback: CallbackQuery, bot: Bot, state: FSMContext)
     if callback.data == "profile":
         user_date = db.get_date(callback.from_user.id)
         if user_date != str(datetime.now().day):
-            up_ball = randint(20, 40)
+            up_ball = randint(1, 4)
             db.update_date(callback.from_user.id, datetime.now().day)
             db.update_ball(callback.from_user.id, up_ball)
-            msg = f'<i>Тебе начислено {up_ball} баллов за посещение</i>'
+            msg = f'<i>Тебе начислено {up_ball} балла за посещение</i>'
         rating = db.get_num_rating(callback.from_user.id)
         ball = db.get_ball(callback.from_user.id)
         msg = f"<b>Профиль</b>\n\n•Твой ID: {callback.from_user.id}\n•Твое место в рейтинге: {rating}\n•Твой балл: {ball}\n\n" + msg
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text=msg, reply_markup=main_cancel_inline_keyboard())
 
     elif callback.data == "info":
-        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="<b>ФУНКЦИОНАЛ</b>\n-Ты можешь посмотреть свои баллы и рейтинг.\n-Я могу составлять персональные варианты <u>ЕГЭ</u>, а также давать случайные.\n-У меня есть полезные материалы для тебя.\n\n<b>БАЛЛЫ</b>\n-Баллы начисляются за ежедневные посещения вкладки 'Профиль 👤', может быть начисленно от 20 до 40 баллов.\n-Баллы начисляются за решение задач.\n\n<b>РЕЙТИНГ</b>\n-Рейтинг - это твое место среди всех пользлвателей, ты можешь соревноваться с друзьями и всегда стремиться к первому месту!", reply_markup=main_cancel_inline_keyboard())
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="<b>ФУНКЦИОНАЛ</b>\n-Ты можешь посмотреть свои баллы и рейтинг.\n-Я могу составлять персональные варианты <u>ЕГЭ</u>, а также давать случайные.\n-У меня есть полезные материалы для тебя.\n\n<b>БАЛЛЫ</b>\n-Баллы начисляются за ежедневные посещения вкладки 'Профиль 👤', может быть начисленно от 2-ух баллов до 4-х баллов.\n-Баллы начисляются раз в день за составенный мною вариант(10 баллов).\n\n<b>РЕЙТИНГ</b>\n-Рейтинг - это твое место среди всех пользлвателей, ты можешь соревноваться с друзьями и всегда стремиться к первому месту!", reply_markup=main_cancel_inline_keyboard())
 
     elif callback.data == "choose_subject":
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Хорошо, выбери предмет", reply_markup=choose_subject_inline_keyboard())
@@ -66,11 +66,19 @@ async def material_test_callback(callback: CallbackQuery, bot: Bot, state: FSMCo
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Чтобы я смог составить персональный вариант, ты должен отправить мне какие задания ты хочешь и сколько их должно быть в варианте. \n\n<i>Пример: 1-2 3-4 12-1</i>\nЭто значит, что я составлю для тебя вариант с двумя заданиями №1, с четырьмя заданиями №3 и одним заданием №12", reply_markup=main_cancel_inline_keyboard())
         await state.set_state(FSMsubject.problems)
     elif callback.data == "random_test":
+        msg = ''
+        date = db.get_date_test(callback.from_user.id)
+        now_date = str(datetime.now().day)
+        if date != now_date:
+            db.update_date_test(callback.from_user.id, now_date)
+            db.update_ball(callback.from_user.id, 10)
+            msg = '\n\n<i>Тебе начислено 10 баллов за вариант</i>'
         await bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
         message = await bot.send_message(chat_id=callback.message.chat.id, text="Я выбираю лучший вариант для тебя\n<i>Секундочку...</i>")
         dictionary_subjects = {"math": {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1, 15: 1, 16: 1, 17: 1, 18: 1, 19: 1},
                                "inf": {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1, 15: 1, 16: 1, 17: 1, 18: 1, 19: 1, 20: 1, 21: 1, 22: 1, 23: 1, 24: 1, 25: 1, 26: 1, 27: 1},
-                               "rus": {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1, 15: 1, 16: 1, 17: 1, 18: 1, 19: 1, 20: 1, 21: 1, 22: 1, 23: 1, 24: 1, 25: 1, 26: 1, 27: 1}}
+                               "rus": {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1, 15: 1, 16: 1, 17: 1, 18: 1, 19: 1, 20: 1, 21: 1, 22: 1, 23: 1, 24: 1, 25: 1, 26: 1, 27: 1},
+                               "phys": {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1, 15: 1, 16: 1, 17: 1, 18: 1, 19: 1, 20: 1, 21: 1, 22: 1, 23: 1, 24: 1, 25: 1, 26: 1}}
         save_path, save_path_solutions = get_test(
             subject=str(subject), problems=dictionary_subjects[subject])
         documents = [InputMediaDocument(media=FSInputFile(path=str(save_path), filename="вариант.pdf")), InputMediaDocument(media=FSInputFile(
@@ -82,7 +90,7 @@ async def material_test_callback(callback: CallbackQuery, bot: Bot, state: FSMCo
             os.remove(save_path_solutions)
         except:
             pass
-        await bot.send_message(chat_id=callback.message.chat.id, text="Ты большой молодец!", reply_markup=main_inline_keyboard())
+        await bot.send_message(chat_id=callback.message.chat.id, text="Ты большой молодец!"+msg, reply_markup=main_inline_keyboard())
         await state.clear()
     elif callback.data == "back_main":
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Чем займёмся?", reply_markup=main_inline_keyboard())

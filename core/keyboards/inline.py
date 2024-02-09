@@ -17,7 +17,7 @@ def choose_subject_inline_keyboard():
     keyboard_builder.button(text='Русский язык 🇷🇺', callback_data='rus')
     keyboard_builder.button(text='Информатика 👨‍💻', callback_data='inf')
     keyboard_builder.button(text='Физика 🌡', callback_data='phys')
-    # keyboard_builder.button(text='Обществознание 📊', callback_data='soc')
+    keyboard_builder.button(text='Обществознание 📊', callback_data='soc')
     keyboard_builder.button(text='Английский 🇬🇧', callback_data='en')
     keyboard_builder.button(text='<< Назад', callback_data='back_main')
     keyboard_builder.adjust(1, 1)

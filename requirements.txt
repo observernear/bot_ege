@@ -19,6 +19,7 @@ pydantic==2.5.3
 pydantic_core==2.14.6
 pyee==8.2.2
 pyppeteer==1.0.2
+redis==5.0.1
 requests==2.31.0
 sdamgia-api==0.1.7
 soupsieve==2.5

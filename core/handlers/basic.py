@@ -8,9 +8,11 @@ from datetime import datetime
 
 import os
 
+import config as cfg
 from db import db
 from core.keyboards.inline import *
 from test import get_test
+from core.keyboards.inline import *
 
 
 async def command_start(message: Message, bot: Bot):
@@ -65,3 +67,15 @@ async def make_test_message(message: Message, bot: Bot, state: FSMContext):
         db.update_ball(message.from_user.id, 10)
         msg = '\n\n<i>Тебе начислено 10 баллов за вариант</i>'
     await bot.send_message(chat_id=message.chat.id, text="Продолжим?"+msg, reply_markup=main_inline_keyboard())
+
+
+async def command_admin(message: Message, bot: Bot):
+    await message.reply("Добро пожаловать создатель.\n<i>Админ меню</i>",
+                        reply_markup=admin_menu_inline_keyboard())
+
+
+async def push_message(message: Message, bot: Bot, state: FSMContext):
+    for id in db.get_users_id():
+        await bot.copy_message(chat_id=int(id[0]), from_chat_id=message.chat.id, message_id=message.message_id)
+    await bot.send_message(chat_id=message.chat.id, text="Сообщение отправлено всем пользователям", reply_markup=admin_menu_inline_keyboard())
+    await state.clear()

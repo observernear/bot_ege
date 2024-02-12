@@ -42,3 +42,21 @@ def main_cancel_inline_keyboard():
     keyboard_builder.button(text='<< Назад', callback_data='back_main')
     keyboard_builder.adjust(1, 1)
     return keyboard_builder.as_markup()
+
+
+def admin_menu_inline_keyboard():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Кол-во пользователей',
+                            callback_data='count_users')
+    keyboard_builder.button(text='БД',
+                            callback_data='DB')
+    keyboard_builder.button(text='Рассылка', callback_data='push_message')
+    keyboard_builder.adjust(1, 1)
+    return keyboard_builder.as_markup()
+
+
+def admin_cancel_inline_keyboard():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Отмена', callback_data='cancel')
+    keyboard_builder.adjust(1, 1)
+    return keyboard_builder.as_markup()

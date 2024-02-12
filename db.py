@@ -47,6 +47,18 @@ class Database:
                 "SELECT `date_test` FROM `users` WHERE `user_id` = ?", (user_id,)).fetchall()
             return result[0][0]
 
+    def get_users_id(self):
+        with self.connection:
+            result = self.cursor.execute(
+                "SELECT `user_id` FROM `users`").fetchall()
+            return result
+
+    def get_db_data(self):
+        with self.connection:
+            result = self.cursor.execute(
+                "SELECT * FROM `users`").fetchall()
+            return result
+
     def update_date(self, user_id, date):
         with self.connection:
             return self.connection.execute("UPDATE `users` SET `date` = ? WHERE `user_id` = ?", (date, user_id))

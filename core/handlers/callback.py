@@ -9,7 +9,7 @@ import os
 
 from db import db
 from core.keyboards.inline import *
-from core.fsm.state import FSMsubject
+from core.fsm.state import FSMsubject, FSMadmin
 from test import get_test
 
 
@@ -28,7 +28,7 @@ async def callback_handler(callback: CallbackQuery, bot: Bot, state: FSMContext)
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text=msg, reply_markup=main_cancel_inline_keyboard())
 
     elif callback.data == "info":
-        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="<b>ФУНКЦИОНАЛ</b>\n-Ты можешь посмотреть свои баллы и рейтинг.\n-Я могу составлять персональные варианты <u>ЕГЭ</u>, а также давать случайные.\n-У меня есть полезные материалы для тебя.\n\n<b>БАЛЛЫ</b>\n-Баллы начисляются за ежедневные посещения вкладки 'Профиль 👤', может быть начисленно от 2-ух баллов до 4-х баллов.\n-Баллы начисляются раз в день за составенный мною вариант(10 баллов).\n\n<b>РЕЙТИНГ</b>\n-Рейтинг - это твое место среди всех пользлвателей, ты можешь соревноваться с друзьями и всегда стремиться к первому месту!", reply_markup=main_cancel_inline_keyboard())
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="<b>ФУНКЦИОНАЛ</b>\n-Ты можешь посмотреть свои баллы и рейтинг.\n-Я могу составлять персональные варианты <u>ЕГЭ</u>, а также давать случайные.\n-У меня есть полезные материалы для тебя.\n\n<b>БАЛЛЫ</b>\n-Баллы начисляются за ежедневные посещения вкладки 'Профиль 👤', может быть начислено от двух баллов до четырех баллов.\n-Баллы начисляются раз в день за составенный мною вариант(10 баллов).\n\n<b>РЕЙТИНГ</b>\n-Рейтинг - это твое место среди всех пользователей, ты можешь соревноваться с друзьями и всегда стремиться к первому месту!", reply_markup=main_cancel_inline_keyboard())
 
     elif callback.data == "choose_subject":
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Хорошо, выбери предмет", reply_markup=choose_subject_inline_keyboard())
@@ -107,3 +107,20 @@ async def choose_subject_callback(callback: CallbackQuery, bot: Bot, state: FSMC
     randint1 = randint(0, 4)
     msg = f"{list_words[randint1]}. Будем учить теорию или попрактикуемся?)"
     await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text=msg, reply_markup=choose_type_inline_keyboard())
+
+
+async def admin_callback(callback: CallbackQuery, bot: Bot, state: FSMContext):
+    if callback.data == "count_users":
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text=f"<b>Количество пользователей:</b> {len(db.get_users_id())}", reply_markup=callback.message.reply_markup)
+    elif callback.data == "DB":
+        msg = ''
+        for i in db.get_db_data():
+            username = (await bot.get_chat_member(int(i[1]), int(i[1]))).user.username
+            msg += f"{i[0]}. username: @{username} ball: {i[2]} act: {i[4]} {i[5]} task: {i[3]}\n"
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text=f"<b>База данных:</b>\n\n"+msg, reply_markup=callback.message.reply_markup)
+    elif callback.data == "push_message":
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Введите сообщение для отправки всем пользователям", reply_markup=admin_cancel_inline_keyboard())
+        await state.set_state(FSMadmin.message_push)
+    elif callback.data == "cancel":
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Отмена", reply_markup=admin_menu_inline_keyboard())
+        await state.clear()

@@ -70,7 +70,7 @@ async def make_test_message(message: Message, bot: Bot, state: FSMContext):
 
 
 async def command_admin(message: Message, bot: Bot):
-    await message.reply("Добро пожаловать создатель.\n<i>Админ меню</i>",
+    await message.reply("Добро пожаловать, создатель.\n<i>Админ меню</i>",
                         reply_markup=admin_menu_inline_keyboard())
 
 

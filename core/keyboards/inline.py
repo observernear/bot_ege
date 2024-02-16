@@ -4,7 +4,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 def main_inline_keyboard():
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(text='Профиль 👤', callback_data='profile')
-    keyboard_builder.button(text='Информация ℹ️', callback_data='info')
+    keyboard_builder.button(
+        text='Информация ℹ️', callback_data='infowadawd', url="https://telegra.ph/Sotka-02-16")
     keyboard_builder.button(text='Выбор предмета 📚',
                             callback_data='choose_subject')
     keyboard_builder.adjust(2, 1)

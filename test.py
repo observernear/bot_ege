@@ -8,7 +8,9 @@ sdamgia = SdamGIA()
 
 def get_test(subject, problems):
     id = sdamgia.generate_test(subject, problems)
+    print(id)
     url = sdamgia.generate_pdf(subject=subject, testid=id)
+    print(url)
     url_sol = sdamgia.generate_pdf(subject=subject, testid=id, solution=True)
     save_path = f'files/{uuid.uuid4()}.pdf'
     download_pdf(url, save_path)
@@ -24,3 +26,4 @@ def download_pdf(url, save_path):
             file.write(response.content)
     else:
         print(f"Failed to download PDF. Status code: {response.status_code}")
+

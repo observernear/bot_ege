@@ -32,11 +32,12 @@ async def start():
                         F.from_user.id.in_(cfg.ADMIN_IDS))
     dp.message.register(make_test_message, FSMsubject.problems)
     dp.message.register(push_message, FSMadmin.message_push)
+    dp.message.register(make_donate, FSMuser.donate)
 
     dp.callback_query.register(
         choose_subject_callback, F.data.in_(["math", "rus", "inf", "phys", "en", "soc"]))
     dp.callback_query.register(admin_callback, F.data.in_(
-        ["count_users", "DB", "push_message", "cancel"]))
+        ["count_users", "DB", "push_message", "cancel", "send_db"]))
     dp.callback_query.register(
         material_test_callback, FSMsubject.subject)
     dp.callback_query.register(callback_handler, F.data)

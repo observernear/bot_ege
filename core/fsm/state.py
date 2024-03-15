@@ -8,3 +8,7 @@ class FSMsubject(StatesGroup):
 
 class FSMadmin(StatesGroup):
     message_push = State()
+
+
+class FSMuser(StatesGroup):
+    donate = State()

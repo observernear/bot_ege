@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from time import sleep
 from datetime import datetime
 
-
+import requests
 import os
 
 import config as cfg
@@ -79,3 +79,30 @@ async def push_message(message: Message, bot: Bot, state: FSMContext):
         await bot.copy_message(chat_id=int(id[0]), from_chat_id=message.chat.id, message_id=message.message_id)
     await bot.send_message(chat_id=message.chat.id, text="Сообщение отправлено всем пользователям", reply_markup=admin_menu_inline_keyboard())
     await state.clear()
+
+
+async def make_donate(message: Message, bot: Bot):
+    try:
+        response = requests.post(url='https://pay.ton-rocket.com/tg-invoices', headers={'Rocket-Pay-Key': cfg.XROCKET_API_KEY}, json={
+            "amount": float(message.text),
+            "currency": "USDT",
+            "description": "donate",
+            "hiddenMessage": "thank you",
+            "commentsEnabled": False,
+            "expiredIn": 300})
+        link = (response.json())['data']['link']
+    except Exception:
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="Ты ввел неправильную сумму. Попробуй ещё раз!"
+        )
+        await message.delete()
+        return
+
+    await bot.send_message(
+        chat_id=message.from_user.id,
+        text=f"Если не работает кнопка, перейди по ссылке: <a href='{link}'>клик</a>",
+        reply_markup=donate_inline_keyboard(url=link)
+    )
+
+    await message.delete()

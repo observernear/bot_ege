@@ -9,7 +9,7 @@ import os
 
 from db import db
 from core.keyboards.inline import *
-from core.fsm.state import FSMsubject, FSMadmin
+from core.fsm.state import *
 from test import get_test
 
 
@@ -39,6 +39,10 @@ async def callback_handler(callback: CallbackQuery, bot: Bot, state: FSMContext)
             await state.clear()
         except:
             pass
+
+    elif callback.data == "donate":
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Введите сумму в USDT:")
+        await state.set_state(FSMuser.donate)
 
 
 async def material_test_callback(callback: CallbackQuery, bot: Bot, state: FSMContext):
@@ -124,3 +128,7 @@ async def admin_callback(callback: CallbackQuery, bot: Bot, state: FSMContext):
     elif callback.data == "cancel":
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Отмена", reply_markup=admin_menu_inline_keyboard())
         await state.clear()
+    elif callback.data == "send_db":
+        file = FSInputFile(path='users.db', filename="users.db")
+        await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id, text="Отправка базы данных", reply_markup=admin_menu_inline_keyboard())
+        await bot.send_document(chat_id=callback.message.chat.id, document=file)

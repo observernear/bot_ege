@@ -8,6 +8,7 @@ def main_inline_keyboard():
         text='Информация ℹ️', callback_data='infowadawd', url="https://telegra.ph/Sotka-02-16")
     keyboard_builder.button(text='Выбор предмета 📚',
                             callback_data='choose_subject')
+    keyboard_builder.button(text='Пожертвование 💰', callback_data='donate')
     keyboard_builder.adjust(2, 1)
     return keyboard_builder.as_markup()
 
@@ -52,6 +53,7 @@ def admin_menu_inline_keyboard():
     keyboard_builder.button(text='БД',
                             callback_data='DB')
     keyboard_builder.button(text='Рассылка', callback_data='push_message')
+    keyboard_builder.button(text='отправить БД', callback_data='send_db')
     keyboard_builder.adjust(1, 1)
     return keyboard_builder.as_markup()
 
@@ -59,5 +61,13 @@ def admin_menu_inline_keyboard():
 def admin_cancel_inline_keyboard():
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(text='Отмена', callback_data='cancel')
+    keyboard_builder.adjust(1, 1)
+    return keyboard_builder.as_markup()
+
+
+def donate_inline_keyboard(url):
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Оплатить 💰', url=url)
+    keyboard_builder.button(text='<< Назад', callback_data='back_main')
     keyboard_builder.adjust(1, 1)
     return keyboard_builder.as_markup()

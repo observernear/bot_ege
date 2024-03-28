@@ -2,7 +2,6 @@ from aiogram import Bot
 from aiogram.types import Message, callback_query, InputMediaDocument
 from aiogram.types.input_file import FSInputFile
 from aiogram.fsm.context import FSMContext
-from time import sleep
 from datetime import datetime
 
 import requests
